@@ -10,11 +10,17 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = Flask(__name__)
 
+# ✅ Egyszerű kezdőoldal, hogy ne legyen 404 hiba
+@app.route("/", methods=["GET"])
+def home():
+    return "✅ AI Agent API működik! Küldj POST kérést a /message végpontra."
+
+# ✅ Itt történik az AI válasz generálása
 @app.route("/message", methods=["POST"])
 def message():
     data = request.json
     user_message = data.get("text", "")
-    
+
     if not user_message:
         return jsonify({"error": "Nincs üzenet"}), 400
     
@@ -38,5 +44,4 @@ def message():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
-    # Railway vagy Render igényli a host="0.0.0.0"-t
     app.run(host="0.0.0.0", port=port)
